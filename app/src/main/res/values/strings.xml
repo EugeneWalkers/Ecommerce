@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Ecommerce</string>
+    <string name="buy_button">Buy</string>
+    <string name="email_hint_string">Email</string>
+    <string name="phone_hint_string">Phone</string>
+    <string name="comment_hint_string">Write here your comments to the order.</string>
+    <string name="order_button_text">Order</string>
+    <string name="customer_name_hint_string">Name</string>
+    <string name="key_string_title">Log as seller</string>
+    <string name="refresh_string_title">Refresh list</string>
+    <string name="title_toolbar_send_information">Order</string>
+    <string name="product">Product:</string>
+    <string name="customer">Customer:</string>
+    <string name="e_mail">E-mail:</string>
+    <string name="phone">Phone:</string>
+    <string name="comment">Comment:</string>
+    <string name="delete">Delete</string>
+</resources>
