@@ -3,6 +3,8 @@ package ew.ecommerce.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import ew.ecommerce.utilities.DataAndReferenceKeeper;
+
 public class Order {
     public String getProduct() {
         return product;
@@ -51,11 +53,11 @@ public class Order {
 
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
-        map.put("comment", comment);
-        map.put("customerName", name);
-        map.put("email", email);
-        map.put("phone", phone);
-        map.put("productName", product);
+        map.put(DataAndReferenceKeeper.COMMENT, comment);
+        map.put(DataAndReferenceKeeper.CUSTOMER_NAME, name);
+        map.put(DataAndReferenceKeeper.EMAIL, email);
+        map.put(DataAndReferenceKeeper.PHONE, phone);
+        map.put(DataAndReferenceKeeper.PRODUCT_NAME, product);
         return map;
     }
 }

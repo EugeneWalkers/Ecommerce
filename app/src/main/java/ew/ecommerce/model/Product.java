@@ -3,12 +3,16 @@ package ew.ecommerce.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import ew.ecommerce.utilities.DataAndReferenceKeeper;
+
 public class Product implements Parcelable{
     private String name;
     private String description;
     private String cost;
     private String imageUrl;
-
     private String category;
 
     public Product(String name, String description, String cost, String imageUrl, String category){
@@ -89,5 +93,15 @@ public class Product implements Parcelable{
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public Map<String, Object> toMap(){
+        Map<String, Object> map = new HashMap<>();
+        map.put(DataAndReferenceKeeper.NAME, name);
+        map.put(DataAndReferenceKeeper.DESCRIPTION, description);
+        map.put(DataAndReferenceKeeper.COST, cost);
+        map.put(DataAndReferenceKeeper.CATEGORY, category);
+        map.put(DataAndReferenceKeeper.IMAGE_URL, imageUrl);
+        return map;
     }
 }

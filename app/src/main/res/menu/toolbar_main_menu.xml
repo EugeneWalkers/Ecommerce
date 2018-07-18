@@ -7,14 +7,20 @@
         android:title="@string/key_string_title"
         app:showAsAction="always" />
     <item
+        android:id="@+id/add_product"
+        android:icon="@drawable/add"
+        android:title="@string/add_product"
+        android:visible="false"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/orders"
         android:icon="@drawable/money"
-        android:title="See all orders"
+        android:title="@string/see_all_orders"
         android:visible="false"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/refresh"
         android:icon="@drawable/refresh"
         android:title="@string/refresh_string_title"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

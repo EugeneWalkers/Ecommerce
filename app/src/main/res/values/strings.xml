@@ -15,4 +15,13 @@
     <string name="phone">Phone:</string>
     <string name="comment">Comment:</string>
     <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="cost_in">Cost</string>
+    <string name="product_name">Product name</string>
+    <string name="description">Description</string>
+    <string name="category">Category</string>
+    <string name="put_here_image_url">Put here image URL</string>
+    <string name="accept">Accept</string>
+    <string name="see_all_orders">See all orders</string>
+    <string name="add_product">Add product</string>
 </resources>

@@ -23,4 +23,6 @@ public class DataAndReferenceKeeper {
     public static final String PHONE = "phone";
     public static final String PRODUCT_NAME = "productName";
 
+    public static final String PRODUCT = "product";
+
 }

@@ -21,6 +21,7 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
 
     private static ArrayList<Product> products;
     private static ClickerListener clicker;
+    private static Boolean isCeller;
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -52,8 +53,14 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
         ProductsListAdapter.clicker = clickerListener;
     }
 
-    public ProductsListAdapter(ArrayList<Product> products) {
-        this.products = products;
+    public ProductsListAdapter(ArrayList<Product> products, Boolean isCeller) {
+        ProductsListAdapter.products = products;
+        if (isCeller == null){
+            ProductsListAdapter.isCeller = false;
+        }
+        else{
+            ProductsListAdapter.isCeller = isCeller;
+        }
     }
 
     @NonNull
@@ -77,6 +84,9 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
         ((TextView) secondPartOfFirstLevel.findViewById(R.id.cost)).setText(product.getCost());
         ((TextView) secondPartOfFirstLevel.findViewById(R.id.category)).setText(product.getCategory());
         ((TextView) secondLevel.findViewById(R.id.description)).setText(product.getDescription());
+        if (isCeller){
+            ((Button)secondLevel.findViewById(R.id.buy)).setText(R.string.edit);
+        }
 
     }
 
@@ -85,7 +95,4 @@ public class ProductsListAdapter extends RecyclerView.Adapter<ProductsListAdapte
         return products.size();
     }
 
-    public void setProducts(ArrayList<Product> products) {
-        this.products = products;
-    }
 }

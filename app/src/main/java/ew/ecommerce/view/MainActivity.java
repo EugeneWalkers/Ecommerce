@@ -2,7 +2,6 @@ package ew.ecommerce.view;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
@@ -23,10 +22,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import ew.ecommerce.R;
-import ew.ecommerce.adapters.OrdersListAdapter;
 import ew.ecommerce.adapters.ProductsListAdapter;
-import ew.ecommerce.model.Order;
 import ew.ecommerce.model.Product;
+import ew.ecommerce.utilities.DataAndReferenceKeeper;
 import ew.ecommerce.viewmodel.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,11 +33,12 @@ public class MainActivity extends AppCompatActivity {
     public static final String PHOTO_DIALOG_TAG = "photo_dialog_tag";
     public static final String PRODUCT_INFO = "product_info";
 
+    public static final int REQUEST_CODE = 1;
+    public static final int OK = 2;
 
     private MainViewModel viewModel;
     private RecyclerView recyclerView;
     private ProductsListAdapter productAdapter;
-    private OrdersListAdapter orderAdapter;
     private LoadingDialog dialog;
     private Toolbar toolbar;
 
@@ -54,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         setObservers();
         setSupportActionBar(toolbar);
         setRecyclerView();
+        viewModel.readProductsFromBase();
     }
 
     @Override
@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         menu.findItem(R.id.orders).setTitle(null);
         menu.findItem(R.id.key).setTitle(null);
         menu.findItem(R.id.refresh).setTitle(null);
+        menu.findItem(R.id.add_product).setTitle(null);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -78,24 +79,19 @@ public class MainActivity extends AppCompatActivity {
                 alert.setTitle("Input password:");
                 final EditText input = new EditText(this);
                 alert.setView(input);
-                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        viewModel.checkPassword(input.getText().toString());
-                    }
-                });
+                alert.setPositiveButton("Ok", (dialogInterface, i) -> viewModel.checkPassword(input.getText().toString()));
                 alert.show();
                 break;
             case R.id.refresh:
-                if (viewModel.getIsCeller().getValue() == null || !viewModel.getIsCeller().getValue()) {
-                    viewModel.readProductsFromBase();
-                } else {
-                    viewModel.readOrdersFromBase();
-                }
+                viewModel.readProductsFromBase();
+                break;
+            case R.id.add_product:
+                Intent addIntent = new Intent(this, EditActivity.class);
+                startActivityForResult(addIntent, REQUEST_CODE);
                 break;
             case R.id.orders:
-
+                Intent intent = new Intent(this, OrdersActivity.class);
+                startActivity(intent);
                 break;
             default:
                 return false;
@@ -114,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
     private void setObservers() {
         Observer<ArrayList<Product>> productsObserver = products -> {
             if (products != null) {
-
                 productAdapter = viewModel.getProductAdapterInstance();
                 productAdapter.setOnItemClickListener((View view, int position) -> {
                     switch (view.getId()) {
@@ -135,10 +130,18 @@ public class MainActivity extends AppCompatActivity {
                             }
                             break;
                         case R.id.buy:
-                            Intent intent = new Intent(this, SendInformationActivity.class);
-                            intent.putExtra(PRODUCT_INFO, products.get(position));
-                            recyclerView.getChildAt(position).findViewById(R.id.secondLevel).setVisibility(ConstraintLayout.GONE);
-                            startActivity(intent);
+                            if (viewModel.getIsCeller().getValue() != null && viewModel.getIsCeller().getValue()){
+                                Intent intent = new Intent(this, EditActivity.class);
+                                intent.putExtra(DataAndReferenceKeeper.PRODUCT, products.get(position));
+                                recyclerView.getChildAt(position).findViewById(R.id.secondLevel).setVisibility(ConstraintLayout.GONE);
+                                startActivityForResult(intent, REQUEST_CODE);
+                            }
+                            else{
+                                Intent intent = new Intent(this, SendInformationActivity.class);
+                                intent.putExtra(PRODUCT_INFO, products.get(position));
+                                recyclerView.getChildAt(position).findViewById(R.id.secondLevel).setVisibility(ConstraintLayout.GONE);
+                                startActivity(intent);
+                            }
                             break;
                         default:
                             break;
@@ -149,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         viewModel.getProducts().observe(this, productsObserver);
-        viewModel.readProductsFromBase();
         Observer<Boolean> isDialogShow = aBoolean -> {
             if (aBoolean) {
                 dialog.show(getSupportFragmentManager(), LOADING_DIALOG_TAG);
@@ -169,35 +171,27 @@ public class MainActivity extends AppCompatActivity {
                 if (aBoolean) {
                     toolbar.getMenu().findItem(R.id.key).setVisible(false);
                     toolbar.getMenu().findItem(R.id.orders).setVisible(true);
-                    toolbar.setTitle("Orders");
+                    toolbar.getMenu().findItem(R.id.add_product).setVisible(true);
                 } else {
                     Toast.makeText(this, "Wrong password!", Toast.LENGTH_SHORT).show();
                 }
             }
         };
         viewModel.getIsCeller().observe(this, isCellerObserver);
-        Observer<ArrayList<Order>> ordersObserver = (ArrayList<Order> orders) -> {
-            if (orders != null) {
-                orderAdapter = viewModel.getOrderAdapterInstance();
-                orderAdapter.setOnItemClickListener((view, position) -> {
-                    switch (view.getId()) {
-                        case R.id.delete:
-                            viewModel.deleteOrder(orders.get(position).getOrderName());
-                            break;
-                        default:
-                            break;
+    }
 
-                    }
-                });
-                recyclerView.setAdapter(orderAdapter);
-            }
-        };
-        viewModel.getOrders().observe(this, ordersObserver);
-        Observer<ArrayList<String>> orderListObserver = orders -> {
-            for (String order : orders) {
-                viewModel.readAndWriteOrder(order);
-            }
-        };
-        viewModel.getOrdersList().observe(this, orderListObserver);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case REQUEST_CODE:
+                if (resultCode == OK){
+                    viewModel.readProductsFromBase();
+                }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }

@@ -63,7 +63,7 @@ public class SendInformationActivity extends AppCompatActivity {
                     break;
                 case SendInformationViewModel.SUCCESSFUL:
                     dialog.dismiss();
-                    Toast.makeText(this, "Successful!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Successfully!", Toast.LENGTH_SHORT).show();
                     finish();
                     break;
                 default:

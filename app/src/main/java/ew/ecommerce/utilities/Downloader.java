@@ -31,25 +31,25 @@ public class Downloader extends AsyncTask<String, Void, Bitmap> {
     }
 
     protected void onPostExecute(Bitmap result) {
-        if (needToCut){
-            bmImage.setImageBitmap(getPreferencedBitmap(result));
-        }
-        else{
-            bmImage.setImageBitmap(result);
+        if (result != null) {
+            if (needToCut) {
+                bmImage.setImageBitmap(getPreferencedBitmap(result));
+            } else {
+                bmImage.setImageBitmap(result);
+            }
         }
     }
 
-    private Bitmap getPreferencedBitmap(Bitmap oldBitmap){
+    private Bitmap getPreferencedBitmap(Bitmap oldBitmap) {
         int oldW = oldBitmap.getWidth();
         int oldH = oldBitmap.getHeight();
         int newW, newH;
-        if (oldW > oldH){
+        if (oldW > oldH) {
             newW = bmImage.getWidth();
-            newH = newW*oldH/oldW;
-        }
-        else{
+            newH = newW * oldH / oldW;
+        } else {
             newH = bmImage.getHeight();
-            newW = oldW*newH/oldH;
+            newW = oldW * newH / oldH;
         }
         return Bitmap.createScaledBitmap(oldBitmap, newW, newH, false);
     }
